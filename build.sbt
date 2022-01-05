@@ -18,6 +18,7 @@ val postgres = "org.postgresql" % "postgresql" % "42.2.8"
 val h2 = "com.h2database" % "h2" % "1.4.199"
 
 enablePlugins(DockerPlugin)
+enablePlugins(JavaAppPackaging)
 
 dockerBaseImage := "adoptopenjdk/openjdk8"
 
