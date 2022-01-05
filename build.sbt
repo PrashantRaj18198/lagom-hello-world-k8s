@@ -22,7 +22,9 @@ enablePlugins(JavaAppPackaging)
 
 dockerBaseImage := "adoptopenjdk/openjdk8"
 
-dockerRepository := Some("prashantraj18198")
+dockerRepository in ThisBuild := Some("docker.io")
+
+dockerUsername in ThisBuild := Some("prashantraj18198")
 
 dockerExposedPorts ++= Seq(9000, 9001)
 
