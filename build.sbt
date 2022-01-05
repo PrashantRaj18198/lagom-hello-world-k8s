@@ -1,5 +1,8 @@
 import com.lightbend.lagom.core.LagomVersion
 
+enablePlugins(DockerPlugin)
+enablePlugins(JavaAppPackaging)
+
 organization in ThisBuild := "com.example"
 version in ThisBuild := "1.0.1-SNAPSHOT"
 
@@ -16,9 +19,6 @@ val akkaDiscovery = "com.lightbend.lagom" %% "lagom-scaladsl-akka-discovery-serv
 val akkaKubernetes = "com.lightbend.akka.discovery" %% "akka-discovery-kubernetes-api" % "1.0.0"
 val postgres = "org.postgresql" % "postgresql" % "42.2.8"
 val h2 = "com.h2database" % "h2" % "1.4.199"
-
-enablePlugins(DockerPlugin)
-enablePlugins(JavaAppPackaging)
 
 dockerBaseImage := "adoptopenjdk/openjdk8"
 
