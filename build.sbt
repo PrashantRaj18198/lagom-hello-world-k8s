@@ -17,9 +17,13 @@ val akkaKubernetes = "com.lightbend.akka.discovery" %% "akka-discovery-kubernete
 val postgres = "org.postgresql" % "postgresql" % "42.2.8"
 val h2 = "com.h2database" % "h2" % "1.4.199"
 
+enablePlugins(DockerPlugin)
+
 dockerBaseImage := "adoptopenjdk/openjdk8"
 
 dockerRepository := Some("jmarin")
+
+dockerExposedPorts ++= Seq(9000, 9001)
 
 lagomCassandraEnabled in ThisBuild := false
 
