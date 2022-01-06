@@ -22,12 +22,6 @@ val h2 = "com.h2database" % "h2" % "1.4.199"
 
 dockerBaseImage := "adoptopenjdk/openjdk8"
 
-dockerRepository := Some("docker.io")
-
-packageName in Docker := "prashantraj18198"
-
-dockerExposedPorts ++= Seq(9000, 9001)
-
 lagomCassandraEnabled in ThisBuild := false
 
 lazy val `lagom-hello-world-k8s` = (project in file("."))
@@ -50,6 +44,9 @@ lazy val `lagom-hello-world-k8s-impl` =
   (project in file("lagom-hello-world-k8s-impl"))
     .enablePlugins(LagomScala)
     .settings(
+      dockerRepository := Some("docker.io")
+      packageName in Docker := Some("prashantraj18198")
+      dockerExposedPorts ++= Seq(9000, 9001)
       libraryDependencies ++= Seq(
         lagomScaladslPersistenceJdbc,
         lagomScaladslKafkaBroker,
