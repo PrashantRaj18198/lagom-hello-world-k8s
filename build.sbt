@@ -2,7 +2,10 @@ import com.lightbend.lagom.core.LagomVersion
 import kubeyml.deployment._
 import kubeyml.deployment.api._
 import kubeyml.deployment.plugin.Keys._
+import scala.concurrent.duration._
 
+enablePlugins(KubeDeploymentPlugin)
+enablePlugins(KubeServicePlugin)
 enablePlugins(DockerPlugin)
 enablePlugins(JavaAppPackaging)
 
@@ -33,7 +36,6 @@ lazy val `lagom-hello-world-k8s` = (project in file("."))
     `lagom-hello-world-k8s-impl`,
     `lagom-hello-world-k8s-stream-api`,
     `lagom-hello-world-k8s-stream-impl`,
-    `deployment-settings`
   )
   .settings(
     dockerRepository := Some("prashantraj18198"),
@@ -96,16 +98,43 @@ val deploymentName = sys.props.getOrElse("deploymentName", default = "hello-worl
 val deploymentNamespace = sys.props.getOrElse("namespace", default = "default")
 val secretsName = sys.props.getOrElse("secretName", default = "myservice-test-secrets")
 
-lazy val `deployment-settings` = 
-  (project in file("."))
-    .enablePlugins(KubeDeploymentPlugin)
-    .enablePlugins(KubeServicePlugin).settings(
-    Seq(
-      kube / namespace := deploymentNamespace, //default is ThisProject / name 
-      kube / application := deploymentName, //default is ThisProject / name
-      kube / livenessProbe := HttpProbe(HttpGet("/ready", port = 80, httpHeaders = List.empty)),
-      kube / resourceLimits := Resource(Cpu.fromCores(2), Memory(2048+512)),
-      kube / resourceRequests := Resource(Cpu(500), Memory(512)),
-      //if you want you can use something like the below to modify any part of the deployment by hand
-      kube / deployment := (kube / deployment).value.pullDockerImage(IfNotPresent)
-    ))
+// val `deployment-settings` = 
+//   (project in file("."))
+//     .enablePlugins(KubeDeploymentPlugin)
+//     .enablePlugins(KubeServicePlugin)
+//     .settings(
+//       Seq(
+//         kube / namespace := deploymentNamespace, //default is ThisProject / name 
+//         kube / application := deploymentName, //default is ThisProject / name
+//         kube / livenessProbe := HttpProbe(HttpGet("/ready", port = 80, httpHeaders = List.empty)),
+//         kube / resourceLimits := Resource(Cpu.fromCores(2), Memory(2048+512)),
+//         kube / resourceRequests := Resource(Cpu(500), Memory(512)),
+//         //if you want you can use something like the below to modify any part of the deployment by hand
+//         kube / deployment := (kube / deployment).value.pullDockerImage(IfNotPresent)
+//       )
+//     )
+//     .settings(
+//       publishArtifact := false,
+//       publish := false
+//     )
+
+// deploy.namespace(deploymentNamespace)
+//     .service(deploymentName)
+//      .withImage("lagom-hello-world-k8s-impl")
+//     .withProbes(
+//       livenessProbe = HttpProbe(HttpGet("/", port = 80, httpHeaders = List.empty)), 
+//       readinessProbe = HttpProbe(HttpGet("/", port = 80, httpHeaders = List.empty), failureThreshold = 10)
+//     ).replicas(3)
+//     .pullDockerImage(IfNotPresent)
+//     .addPorts(List(Port(None, 80)))
+//     .deploymentStrategy(RollingUpdate(0, 1))
+
+val deploymentSettings = Seq(
+        kube / namespace := deploymentNamespace, //default is ThisProject / name 
+        kube / application := deploymentName, //default is ThisProject / name
+        kube / livenessProbe := HttpProbe(HttpGet("/ready", port = 80, httpHeaders = List.empty)),
+        kube / resourceLimits := Resource(Cpu.fromCores(2), Memory(2048+512)),
+        kube / resourceRequests := Resource(Cpu(500), Memory(512)),
+        //if you want you can use something like the below to modify any part of the deployment by hand
+        kube / deployment := (kube / deployment).value.pullDockerImage(IfNotPresent)
+)
