@@ -30,7 +30,6 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Configure kubeconfig
         run: aws eks update-kubeconfig --name dev
-      - uses: azure/setup-kubectl@v2.0
       - name: Build and push image
         run: |
           echo "Pushing with image tag ${{ steps.get_sha.outputs.SHA_SHORT }}"
