@@ -32,6 +32,7 @@ jobs:
         uses: docker://amazon/aws-cli:2.4.9
         with:
           args: eks update-kubeconfig --name dev
+      - uses: azure/setup-kubectl@v2.0
       - name: Build and push image
         run: |
           echo "Pushing with image tag ${{ steps.get_sha.outputs.SHA_SHORT }}"
