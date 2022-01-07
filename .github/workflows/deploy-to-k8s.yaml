@@ -34,5 +34,6 @@ jobs:
           args: eks update-kubeconfig --name dev
       - name: Build and push image
         run: |
+          echo "Pushing with image tag ${{ steps.get_sha.outputs.SHA_SHORT }}"
           sbt clean
           sbt clean docker:publish -Dversion:${{ steps.get_sha.outputs.SHA_SHORT }}
