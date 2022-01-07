@@ -29,9 +29,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Configure kubeconfig
-        uses: docker://amazon/aws-cli:2.4.9
-        with:
-          args: eks update-kubeconfig --name dev
+        run: aws eks update-kubeconfig --name dev
       - uses: azure/setup-kubectl@v2.0
       - name: Build and push image
         run: |
