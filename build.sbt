@@ -4,7 +4,7 @@ enablePlugins(DockerPlugin)
 enablePlugins(JavaAppPackaging)
 
 organization in ThisBuild := "com.example"
-version in ThisBuild := "1.0.1-SNAPSHOT"
+version in ThisBuild := sys.props.getOrElse("version", default = "1.0.1-SNAPSHOT")
 
 // version in ThisBuild ~= (_.replace('+', '-'))
 
@@ -30,6 +30,10 @@ lazy val `lagom-hello-world-k8s` = (project in file("."))
     `lagom-hello-world-k8s-impl`,
     `lagom-hello-world-k8s-stream-api`,
     `lagom-hello-world-k8s-stream-impl`
+  )
+  .settings(
+    dockerRepository := Some("prashantraj18198"),
+    skip in publish := true,
   )
 
 lazy val `lagom-hello-world-k8s-api` =
