@@ -45,7 +45,7 @@ lazy val `lagom-hello-world-k8s-impl` =
     .enablePlugins(LagomScala)
     .settings(
       dockerRepository := Some("docker.io"),
-      packageName in Docker := Some("prashantraj18198"),
+      packageName := "prashantraj18198",
       dockerExposedPorts ++= Seq(9000, 9001),
       libraryDependencies ++= Seq(
         lagomScaladslPersistenceJdbc,
