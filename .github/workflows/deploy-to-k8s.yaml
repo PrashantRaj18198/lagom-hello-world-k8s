@@ -36,4 +36,4 @@ jobs:
         run: |
           echo "Pushing with image tag ${{ steps.get_sha.outputs.SHA_SHORT }}"
           sbt clean
-          sbt clean docker:publish -Dversion:${{ steps.get_sha.outputs.SHA_SHORT }}
+          sbt clean docker:publish -Dversion='${{ steps.get_sha.outputs.SHA_SHORT }}'
