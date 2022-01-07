@@ -29,13 +29,10 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-      - name: Install and configure aws
-        run: |
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip -q awscliv2.zip
-          sudo ./aws/install
-          aws configure
-          aws eks update-kubeconfig --name $AWS_EKS_CLUSTER_NAME
+      - name: configure aws
+        uses: docker://amazon/aws-cli:2.4.9
+        with:
+          args: eks update-kubeconfig --name $AWS_EKS_CLUSTER_NAME
       - name: Build and push image
         run: |
           sbt clean
