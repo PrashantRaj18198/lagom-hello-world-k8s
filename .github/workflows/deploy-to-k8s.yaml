@@ -28,7 +28,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-      - name: configure aws
+      - name: configure kubeconfig
         uses: docker://amazon/aws-cli:2.4.9
         with:
           args: eks update-kubeconfig --name dev
@@ -37,3 +37,19 @@ jobs:
           echo "Pushing with image tag ${{ steps.get_sha.outputs.SHA_SHORT }}"
           sbt clean
           sbt clean docker:publish -Dversion='${{ steps.get_sha.outputs.SHA_SHORT }}'
+          sbt kubeyml:gen -Dversion='${{ steps.get_sha.outputs.SHA_SHORT }}'
+          kubectl apply -f target/kubeyml/
+
+# Help on this action:
+# 1. Add the secrets
+# 2. In your build.sbt file, accept version from props refer the build.sbt file in this repository.
+#    Version is passed as props to tag the images and push to the docker registry. As we don't want
+#    to overwrite the images.
+# 3. `sbt kubeyml:gen -Dversion='${{ steps.get_sha.outputs.SHA_SHORT }}'` command generates the deployment file for k8s.
+#    If your are using some other command to generate k8s please replace this command.
+#    Make sure to pass -Dversion='${{ steps.get_sha.outputs.SHA_SHORT }}'`
+#    as the image to deploy from needs to be the same as the one just pushed to docker registry.
+#
+# 4. After the "generate-kubernetes-resources" command do `kubectl apply -f path/to/resource.yaml`
+#    If you have a folder which has multiple files do `kubectl apply -f path/to/resource-dir/`.
+
