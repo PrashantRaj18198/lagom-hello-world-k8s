@@ -30,10 +30,8 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Build and push image
         run: |
-          sbt docker:stage
-          sbt docker:publishLocal
-          docker image ls
-          sbt docker:publish
+          sbt clean
+          sbt clean docker:publish
       # - name: Install and configure aws
       #   run: |
       #     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
