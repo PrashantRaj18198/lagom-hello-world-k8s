@@ -37,6 +37,8 @@ jobs:
           echo "Pushing with image tag ${{ steps.get_sha.outputs.SHA_SHORT }}"
           sbt clean
           sbt clean docker:publish -Dversion='${{ steps.get_sha.outputs.SHA_SHORT }}'
+      - name: Deploy to k8s
+        run: |
           sbt kubeyml:gen -Dversion='${{ steps.get_sha.outputs.SHA_SHORT }}'
           kubectl apply -f target/kubeyml/
 
