@@ -11,7 +11,7 @@ version in ThisBuild := "1.0.1-SNAPSHOT"
 // dynver in ThisBuild ~= (_.replace('+', '-'))
 
 // the Scala version that will be used for cross-compiled libraries
-scalaVersion in ThisBuild := "2.12.8"
+scalaVersion in ThisBuild := "2.12.4"
 
 val macwire = "com.softwaremill.macwire" %% "macros" % "2.3.0" % "provided"
 val scalaTest = "org.scalatest" %% "scalatest" % "3.0.4" % Test
@@ -35,6 +35,7 @@ lazy val `lagom-hello-world-k8s` = (project in file("."))
 lazy val `lagom-hello-world-k8s-api` =
   (project in file("lagom-hello-world-k8s-api"))
     .settings(
+      dockerRepository := Some("prashantraj18198"),
       libraryDependencies ++= Seq(
         lagomScaladslApi
       )
@@ -44,8 +45,7 @@ lazy val `lagom-hello-world-k8s-impl` =
   (project in file("lagom-hello-world-k8s-impl"))
     .enablePlugins(LagomScala)
     .settings(
-      dockerRepository := Some("docker.io"),
-      packageName := "prashantraj18198",
+      dockerRepository := Some("prashantraj18198"),
       dockerExposedPorts ++= Seq(9000, 9001),
       libraryDependencies ++= Seq(
         lagomScaladslPersistenceJdbc,
@@ -65,6 +65,7 @@ lazy val `lagom-hello-world-k8s-impl` =
 lazy val `lagom-hello-world-k8s-stream-api` =
   (project in file("lagom-hello-world-k8s-stream-api"))
     .settings(
+      dockerRepository := Some("prashantraj18198"),
       libraryDependencies ++= Seq(
         lagomScaladslApi
       )
@@ -74,6 +75,7 @@ lazy val `lagom-hello-world-k8s-stream-impl` =
   (project in file("lagom-hello-world-k8s-stream-impl"))
     .enablePlugins(LagomScala)
     .settings(
+      dockerRepository := Some("prashantraj18198"),
       libraryDependencies ++= Seq(
         lagomScaladslTestKit,
         macwire,
