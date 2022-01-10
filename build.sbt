@@ -3,6 +3,7 @@ import kubeyml.deployment._
 import kubeyml.deployment.api._
 import kubeyml.deployment.plugin.Keys._
 import scala.concurrent.duration._
+import com.amazonaws.regions.{Region, Regions}
 
 enablePlugins(KubeDeploymentPlugin)
 enablePlugins(KubeServicePlugin)
@@ -11,6 +12,12 @@ enablePlugins(JavaAppPackaging)
 
 organization in ThisBuild := "com.example"
 version in ThisBuild := sys.props.getOrElse("version", default = "1.0.1-SNAPSHOT")
+
+region           in ecr := Region.getRegion(Regions.US_EAST_1)
+repositoryName   in ecr := (packageName in Docker).value
+localDockerImage in ecr := (packageName in Docker).value + ":" + (version in Docker).value
+
+push in ecr <<= (push in ecr) dependsOn (publishLocal in Docker)
 
 // version in ThisBuild ~= (_.replace('+', '-'))
 

@@ -37,17 +37,18 @@ jobs:
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
-      - name: Create ecr repository
-        env:
-          REPO_NAME: argonaut/hello-world
-        run: aws ecr describe-repositories --repository-names $REPO_NAME || aws ecr create-repository --repository-name $REPO_NAME
+      # - name: Create ecr repository
+      #   env:
+      #     REPO_NAME: argonaut/hello-world
+      #   run: aws ecr describe-repositories --repository-names $REPO_NAME || aws ecr create-repository --repository-name $REPO_NAME
       - name: Configure kubeconfig
         run: aws eks update-kubeconfig --name dev
       - name: Build and push image
         run: |
           echo "Pushing with image tag ${{ steps.get_sha.outputs.SHA_SHORT }}"
           sbt clean
-          sbt clean docker:publish -Dversion='${{ steps.get_sha.outputs.SHA_SHORT }}'
+          sbt clean docker:publishLocal -Dversion='${{ steps.get_sha.outputs.SHA_SHORT }}'
+          sbt ecr:createRepository ecr:login ecr:push
       - name: Deploy to k8s
         run: |
           sbt kubeyml:gen -Dversion='${{ steps.get_sha.outputs.SHA_SHORT }}'
