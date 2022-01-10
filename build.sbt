@@ -6,7 +6,6 @@ import scala.concurrent.duration._
 import com.amazonaws.regions.{Region, Regions}
 
 enablePlugins(KubeDeploymentPlugin)
-enablePlugins(KubeServicePlugin)
 enablePlugins(DockerPlugin)
 enablePlugins(JavaAppPackaging)
 enablePlugins(EcrPlugin)
@@ -109,29 +108,28 @@ val deploymentName = sys.props.getOrElse("deploymentName", default = "hello-worl
 val deploymentNamespace = sys.props.getOrElse("namespace", default = "default")
 val secretsName = sys.props.getOrElse("secretName", default = "myservice-test-secrets")
 
-// val `deployment-settings` = 
-//   (project in file("."))
-//     .enablePlugins(KubeDeploymentPlugin)
-//     .enablePlugins(KubeServicePlugin)
-//     .settings(
-//       Seq(
-//         kube / namespace := deploymentNamespace, //default is ThisProject / name 
-//         kube / application := deploymentName, //default is ThisProject / name
-//         kube / livenessProbe := HttpProbe(HttpGet("/ready", port = 80, httpHeaders = List.empty)),
-//         kube / resourceLimits := Resource(Cpu.fromCores(2), Memory(2048+512)),
-//         kube / resourceRequests := Resource(Cpu(500), Memory(512)),
-//         //if you want you can use something like the below to modify any part of the deployment by hand
-//         kube / deployment := (kube / deployment).value.pullDockerImage(IfNotPresent)
-//       )
-//     )
-//     .settings(
-//       publishArtifact := false,
-//       publish := false
-//     )
+val `deployment-settings` = 
+  (project in file("."))
+    .enablePlugins(KubeDeploymentPlugin)
+    .settings(
+      Seq(
+        kube / namespace := deploymentNamespace, //default is ThisProject / name 
+        kube / application := deploymentName, //default is ThisProject / name
+        kube / livenessProbe := HttpProbe(HttpGet("/ready", port = 80, httpHeaders = List.empty)),
+        kube / resourceLimits := Resource(Cpu.fromCores(2), Memory(2048+512)),
+        kube / resourceRequests := Resource(Cpu(500), Memory(512)),
+        //if you want you can use something like the below to modify any part of the deployment by hand
+        kube / deployment := (kube / deployment).value.pullDockerImage(IfNotPresent),
+        kube / dockerImage := "054565121117.dkr.ecr.us-east-1.amazonaws.com/argonaut/lagom-hello-world-k8s"
+      )
+    )
+    .settings(
+      publishArtifact := false,
+    )
 
 // deploy.namespace(deploymentNamespace)
 //     .service(deploymentName)
-//      .withImage("lagom-hello-world-k8s-impl")
+//      .withImage("054565121117.dkr.ecr.us-east-1.amazonaws.com/argonaut/lagom-hello-world-k8s")
 //     .withProbes(
 //       livenessProbe = HttpProbe(HttpGet("/", port = 80, httpHeaders = List.empty)), 
 //       readinessProbe = HttpProbe(HttpGet("/", port = 80, httpHeaders = List.empty), failureThreshold = 10)
@@ -140,12 +138,12 @@ val secretsName = sys.props.getOrElse("secretName", default = "myservice-test-se
 //     .addPorts(List(Port(None, 80)))
 //     .deploymentStrategy(RollingUpdate(0, 1))
 
-val deploymentSettings = Seq(
-        kube / namespace := deploymentNamespace, //default is ThisProject / name 
-        kube / application := deploymentName, //default is ThisProject / name
-        kube / livenessProbe := HttpProbe(HttpGet("/ready", port = 80, httpHeaders = List.empty)),
-        kube / resourceLimits := Resource(Cpu.fromCores(2), Memory(2048+512)),
-        kube / resourceRequests := Resource(Cpu(500), Memory(512)),
-        //if you want you can use something like the below to modify any part of the deployment by hand
-        kube / deployment := (kube / deployment).value.pullDockerImage(IfNotPresent)
-)
+// val deploymentSettings = Seq(
+//         kube / namespace := deploymentNamespace, //default is ThisProject / name 
+//         kube / application := deploymentName, //default is ThisProject / name
+//         kube / livenessProbe := HttpProbe(HttpGet("/ready", port = 80, httpHeaders = List.empty)),
+//         kube / resourceLimits := Resource(Cpu.fromCores(2), Memory(2048+512)),
+//         kube / resourceRequests := Resource(Cpu(500), Memory(512)),
+//         //if you want you can use something like the below to modify any part of the deployment by hand
+//         kube / deployment := (kube / deployment).value.pullDockerImage(IfNotPresent)
+// )
