@@ -52,7 +52,6 @@ lazy val `lagom-hello-world-k8s` = (project in file("."))
     `lagom-hello-world-k8s-stream-impl`,
   )
   .settings(
-    dockerRepository := Some("prashantraj18198"),
     publishArtifact := false,
   )
 
@@ -69,7 +68,6 @@ lazy val `lagom-hello-world-k8s-impl` =
   (project in file("lagom-hello-world-k8s-impl"))
     .enablePlugins(LagomScala)
     .settings(
-      dockerRepository := Some("prashantraj18198"),
       dockerExposedPorts ++= Seq(9000, 9001),
       libraryDependencies ++= Seq(
         lagomScaladslPersistenceJdbc,
@@ -99,7 +97,6 @@ lazy val `lagom-hello-world-k8s-stream-impl` =
   (project in file("lagom-hello-world-k8s-stream-impl"))
     .enablePlugins(LagomScala)
     .settings(
-      dockerRepository := Some("prashantraj18198"),
       libraryDependencies ++= Seq(
         lagomScaladslTestKit,
         macwire,
