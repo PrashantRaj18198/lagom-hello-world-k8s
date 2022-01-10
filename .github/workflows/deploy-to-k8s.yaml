@@ -37,6 +37,7 @@ jobs:
         env:
           REPO_NAME: argonaut/hello-world
         run: aws ecr describe-repositories --repository-names $REPO_NAME || aws ecr create-repository --repository-name $REPO_NAME
+        if: env.USE_ECR == true
       - name: Configure kubeconfig
         run: aws eks update-kubeconfig --name dev
       - name: Build and push image
