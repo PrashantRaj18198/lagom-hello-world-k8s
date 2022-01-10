@@ -9,15 +9,22 @@ enablePlugins(KubeDeploymentPlugin)
 enablePlugins(KubeServicePlugin)
 enablePlugins(DockerPlugin)
 enablePlugins(JavaAppPackaging)
+enablePlugins(EcrPlugin)
 
 organization in ThisBuild := "com.example"
-version in ThisBuild := sys.props.getOrElse("version", default = "1.0.1-SNAPSHOT")
+version in ThisBuild := sys.env.getOrElse("VERSION", default = "1.0.1-SNAPSHOT")
 
-region           in ecr := Region.getRegion(Regions.US_EAST_1)
-repositoryName   in ecr := (packageName in Docker).value
-localDockerImage in ecr := (packageName in Docker).value + ":" + (version in Docker).value
 
-push in ecr <<= (push in ecr) dependsOn (publishLocal in Docker)
+region           in Ecr := Region.getRegion(Regions.US_EAST_1)
+repositoryName   in Ecr := "argonaut/" + (packageName in Docker).value
+localDockerImage in Ecr := (packageName in Docker).value + ":" + (version in Docker).value
+repositoryTags   in Ecr := Seq(version.value)
+
+// Create the repository before authentication takes place (optional)
+login in Ecr := ((login in Ecr) dependsOn (createRepository in Ecr)).value
+
+// Authenticate and publish a local Docker image before pushing to ECR
+push in Ecr := ((push in Ecr) dependsOn (publishLocal in Docker, login in Ecr)).value
 
 // version in ThisBuild ~= (_.replace('+', '-'))
 
