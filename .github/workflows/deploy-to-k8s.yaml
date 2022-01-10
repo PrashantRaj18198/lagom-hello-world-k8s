@@ -10,7 +10,7 @@ env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_DEFAULT_REGION: us-east-1
-  USE_ECR: "false"
+  USE_ECR: "true"
 
 jobs:
   setup:
@@ -33,6 +33,10 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
         if: env.USE_ECR == true
+      - name: Create ecr repository
+        env:
+          REPO_NAME: argonaut/hello-world
+        run: aws ecr describe-repositories --repository-names $REPO_NAME || aws ecr create-repository --repository-name $REPO_NAME
       - name: Configure kubeconfig
         run: aws eks update-kubeconfig --name dev
       - name: Build and push image
